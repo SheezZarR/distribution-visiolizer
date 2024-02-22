@@ -29,3 +29,5 @@ target_include_directories(
 	PUBLIC "${PROJECT_BINARY_DIR}/vendor"
 	PUBLIC "${PROJECT_BINARY_DIR}/vendor/backends"
 )
+
+target_link_libraries(3dviz Dearimgui)
