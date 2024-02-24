@@ -7,7 +7,7 @@ project("My Project")
 find_package(glfw3 3.3 REQUIRED)
 find_package(OpenGL REQUIRED)
 
-add_executable(3dviz "src/main.cpp") 
+add_executable(3dviz "src/main.cpp" "src/myapp.cpp") 
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
