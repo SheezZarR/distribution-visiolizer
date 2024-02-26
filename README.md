@@ -10,5 +10,6 @@ With cmake
 cmake -S . -B build
 cd build
 cmake --build .
+./3dviz
 ```
 

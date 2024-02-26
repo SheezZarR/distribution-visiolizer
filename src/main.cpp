@@ -75,7 +75,7 @@ int main(int, char**)
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
     //io.ConfigViewportsNoAutoMerge = true;
     //io.ConfigViewportsNoTaskBarIcon = true;
 
@@ -115,6 +115,7 @@ int main(int, char**)
     // Our state
     bool show_demo_window = true;
     bool show_another_window = false;
+    bool show_my_ui = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Main loop
@@ -132,7 +133,12 @@ int main(int, char**)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        MyApp::RenderUI();
+        // Create dockspace
+        // Attach viewport window, properties
+        MyApp::ShowDockWindow(); 
+        ImGui::ShowDemoWindow();
+        // MyApp::RenderUI(&show_my_ui);
+        MyApp::RenderUI2();
 
         // Rendering
         ImGui::Render();
