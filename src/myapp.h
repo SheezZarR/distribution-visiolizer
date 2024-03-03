@@ -4,7 +4,7 @@ namespace MyApp {
 
     void ShowDockWindow();
     
-    void RenderUI(bool* show_my_ui);
+    void RenderUI();
     void RenderUI2();
 
 }

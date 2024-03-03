@@ -18495,6 +18495,7 @@ void ImGui::DockBuilderDockWindow(const char* window_name, ImGuiID node_id)
     ImGuiContext& g = *GImGui; IM_UNUSED(g);
     IMGUI_DEBUG_LOG_DOCKING("[docking] DockBuilderDockWindow '%s' to node 0x%08X\n", window_name, node_id);
     ImGuiID window_id = ImHashStr(window_name);
+    
     if (ImGuiWindow* window = FindWindowByID(window_id))
     {
         // Apply to created window
