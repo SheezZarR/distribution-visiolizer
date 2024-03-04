@@ -27,13 +27,15 @@ namespace MyApp {
             ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus
         );
         
-        ImGui::Begin("MyDockSpace", nullptr, window_flags);
+        ImGui::Begin("GlobalDockSpace", nullptr, window_flags);
         ImGui::PopStyleVar(3);
 
-        ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+        ImGuiID dockspace_id = ImGui::GetID("GlobalDockSpace");
         
-        if (ImGui::DockBuilderGetNode(dockspace_id) == NULL) {
+        if (ImGui::DockBuilderGetNode(dockspace_id) == NULL) 
+        {
             // TODO: respect .ini file (probably solved with the statement above)
+            // TODO: :nerd: determine whether to include this block of code at the start. 
             
             ImGui::DockBuilderRemoveNode(dockspace_id); // clearing existing layout
             ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags);
@@ -62,7 +64,7 @@ namespace MyApp {
 
     }
 
-    void RenderUI() {
+    void ShowOpenGLWindow() {
         
         ImGui::Begin("Opengl");
 
@@ -71,13 +73,15 @@ namespace MyApp {
         ImGui::End();
     }
 
-    void RenderUI2() {
-        static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;   
-
+    void ShowPropertiesWindow() 
+    {        
         ImGui::Begin("Properties");
 
         ImGui::Text("Nope...");
 
         ImGui::End();
+        
+        // TODO: dock the window
+        ImGui::ShowDemoWindow();
     }
 }

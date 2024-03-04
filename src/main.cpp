@@ -136,10 +136,9 @@ int main(int, char**)
         // Create dockspace
         // Attach viewport window, properties
         MyApp::ShowDockWindow(); 
-        ImGui::ShowDemoWindow();
         
-        MyApp::RenderUI();
-        MyApp::RenderUI2();
+        MyApp::ShowOpenGLWindow();
+        MyApp::ShowPropertiesWindow();
 
         // Rendering
         ImGui::Render();

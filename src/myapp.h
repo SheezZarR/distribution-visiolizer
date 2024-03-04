@@ -4,7 +4,7 @@ namespace MyApp {
 
     void ShowDockWindow();
     
-    void RenderUI();
-    void RenderUI2();
+    void ShowOpenGLWindow();
+    void ShowPropertiesWindow();
 
 }
