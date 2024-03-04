@@ -3,8 +3,44 @@
 #include "myapp.h"
 
 namespace MyApp {
+    void RenderUI() {    
+        ImGui::Begin("Opengl");
+
+        ImGui::Text("Hello ImGUI!");    
+    
+        ImGui::End();
+    }
+
+    void RenderUI2() {
+        ImGui::Begin("Properties");
+
+        ImGui::Text("Nope...");
+
+        ImGui::End();
+    }
+
     void ShowDockWindow()
     {
+        ImGuiID main_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+        static bool first_time = true;
+
+        if (first_time) {
+            first_time = false;
+
+            ImGuiID ogl_id = ImGui::GetID("Opengl");
+            ImGuiID properties_id = ImGui::GetID("Properties");
+
+            ImGui::DockBuilderAddNode(main_id, ImGuiDockNodeFlags_DockSpace);
+            ImGui::DockBuilderSplitNode(main_id, ImGuiDir_Left, 0.3f, &ogl_id, &properties_id);
+            ImGui::DockBuilderDockWindow("Opengl", ogl_id);
+            ImGui::DockBuilderDockWindow("Properties", properties_id);
+
+        }   
+        
+        
+        /*
+        // Splits is accurate in this block.
+
         static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
         ImGuiWindowFlags window_flags = (
@@ -59,25 +95,8 @@ namespace MyApp {
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f));
 
         ImGui::End();
-
+        */ 
     }
 
-    void RenderUI() {
-        
-        ImGui::Begin("Opengl");
 
-        ImGui::Text("Hello ImGUI!");    
-    
-        ImGui::End();
-    }
-
-    void RenderUI2() {
-        static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;   
-
-        ImGui::Begin("Properties");
-
-        ImGui::Text("Nope...");
-
-        ImGui::End();
-    }
 }
