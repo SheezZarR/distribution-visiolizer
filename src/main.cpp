@@ -7,10 +7,13 @@
 // - Documentation        https://dearimgui.com/docs (same as your local docs/ folder).
 // - Introduction, links and more at the top of imgui.cpp
 
+#include <iostream>
+#include <stdio.h>
+
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-#include <stdio.h>
+
 #define GL_SILENCE_DEPRECATION
 #if defined(IMGUI_IMPL_OPENGL_ES2)
 #include <GLES2/gl2.h>
@@ -117,6 +120,17 @@ int main(int, char**)
     bool show_another_window = false;
     
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+    int *width = nullptr;
+    int *height = nullptr;
+
+    glfwGetWindowSize(window, width, height);
+
+    std::cout << "Window size is: " << width << " " << height << std::endl;
+ 
+    const MyApp::FrameBuffers sceneBuf((*width), (*height));
+    
+    std::cout << "FrameBuffer Builded" << std::endl;
 
     // Main loop
     while (!glfwWindowShouldClose(window))

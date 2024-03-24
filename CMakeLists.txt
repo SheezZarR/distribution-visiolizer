@@ -15,19 +15,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 target_link_libraries(3dviz glfw)
 target_link_libraries(3dviz OpenGL::GL)
 
-add_subdirectory(
-	"vendor/"
-)
+add_subdirectory("vendor/imgui")
+add_subdirectory("vendor/glad")
+
 
 target_include_directories( 
 	3dviz
 	PUBLIC "${PROJECT_SOURCE_DIR}/src"
 	PUBLIC "${PROJECT_SOURCE_DIR}/vendor"
-	PUBLIC "${PROJECT_SOURCE_DIR}/vendor/backends"
-	
-	PUBLIC "${PROJECT_BINARY_DIR}/src"
-	PUBLIC "${PROJECT_BINARY_DIR}/vendor"
-	PUBLIC "${PROJECT_BINARY_DIR}/vendor/backends"
+	PUBLIC "${PROJECT_SOURCE_DIR}/vendor/glad"
+	PUBLIC "${PROJECT_SOURCE_DIR}/vendor/imgui"
+	PUBLIC "${PROJECT_SOURCE_DIR}/vendor/imgui/backends"
 )
 
 target_link_libraries(3dviz Dearimgui)
+target_link_libraries(3dviz glad)
