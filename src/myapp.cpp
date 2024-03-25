@@ -1,33 +1,41 @@
 #include <iostream>
 
+#include "glad.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include "imgui.h"
 #include "imgui_internal.h"
-#include "glad.h"
 #include "myapp.h"
+
+#define GL_SILENCE_DEPRECATION
+#if defined(IMGUI_IMPL_OPENGL_ES2)
+#include <GLES2/gl2.h>
+#endif
+#include <GLFW/glfw3.h> // Will drag system OpenGL headers
 
 namespace MyApp {
     FrameBuffers::FrameBuffers(const int width, const int height) {
         glGenFramebuffers(1, &fbo);
-        // glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-        // glGenTextures(1, &texture);
-        // glBindTexture(GL_TEXTURE_2D, texture);
-        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
 
-        // glGenRenderbuffers(1, &rbo);
-        // glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-        // glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-        // glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+        glGenRenderbuffers(1, &rbo);
+        glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
-        // if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        //     std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
 
-        // glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        // glBindTexture(GL_TEXTURE_2D, 0);
-        // glBindRenderbuffer(GL_RENDERBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
     }
 
     FrameBuffers::~FrameBuffers() 
@@ -128,9 +136,40 @@ namespace MyApp {
     void ShowOpenGLWindow() {
         
         ImGui::Begin("Opengl");
+        { 
+            ImGui::Text("Hi ImGui!");
 
-        ImGui::Text("Hello ImGUI!");    
-    
+            ImGui::BeginChild("Viewport");
+            {
+                ImGui::Text("Silly goober");
+            }
+            ImGui::EndChild();
+        }
+        ImGui::End();
+    }
+
+    void ShowOpenGLWindow(FrameBuffers* sceneBuf) {
+        
+        ImGui::Begin("Opengl");
+        { 
+            ImGui::Text("Hi ImGui!");
+
+            ImGui::BeginChild("Viewport");
+            // const float width = ImGui::GetContentRegionAvail().x;
+            // const float height = ImGui::GetContentRegionAvail().y;
+
+            // *m_width = width;
+            // *m_height = height;
+
+            ImGui::Image(
+                (ImTextureID)sceneBuf->getFrameTexture(),
+                ImGui::GetContentRegionAvail(),
+                ImVec2(0, 1),
+                ImVec2(1, 0)
+            );
+
+            ImGui::EndChild();
+        }
         ImGui::End();
     }
 

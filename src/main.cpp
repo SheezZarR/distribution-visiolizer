@@ -10,6 +10,7 @@
 #include <iostream>
 #include <stdio.h>
 
+#include "glad.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -56,12 +57,12 @@ int main(int, char**)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
 #else
-    // GL 3.0 + GLSL 130
-    const char* glsl_version = "#version 130";
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-    //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
+    // GL 4.6 + GLSL 460
+    const char* glsl_version = "#version 460";
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 #endif
 
     // Create window with graphics context
@@ -71,6 +72,13 @@ int main(int, char**)
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
 
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+
+        return -1;
+    }
+    std::cout <<  "Glad INIT successful" << std::endl;
+    
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -115,26 +123,29 @@ int main(int, char**)
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != nullptr);
 
+
+
     // Our state
     bool show_demo_window = true;
     bool show_another_window = false;
     
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-    int *width = nullptr;
-    int *height = nullptr;
+    int width = 0;
+    int height = 0;
 
-    glfwGetWindowSize(window, width, height);
+    glfwGetWindowSize(window, &width, &height);
 
     std::cout << "Window size is: " << width << " " << height << std::endl;
  
-    const MyApp::FrameBuffers sceneBuf((*width), (*height));
+    // MyApp::FrameBuffers sceneBuf(300, 300);
     
-    std::cout << "FrameBuffer Builded" << std::endl;
+    // std::cout << "FrameBuffer Builded" << std::endl;
 
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
+        // sceneBuf.Bind();
         // Poll and handle events (inputs, window resize, etc.)
         // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
         // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
@@ -151,6 +162,7 @@ int main(int, char**)
         // Attach viewport window, properties
         MyApp::ShowDockWindow(); 
         
+        // MyApp::ShowOpenGLWindow(&sceneBuf);
         MyApp::ShowOpenGLWindow();
         MyApp::ShowPropertiesWindow();
 
@@ -173,8 +185,9 @@ int main(int, char**)
             ImGui::RenderPlatformWindowsDefault();
             glfwMakeContextCurrent(backup_current_context);
         }
-
+        
         glfwSwapBuffers(window);
+        // sceneBuf.Unbind();
     }
 
     // Cleanup

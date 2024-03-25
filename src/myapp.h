@@ -22,6 +22,7 @@ namespace MyApp {
     void ShowDockWindow();
     
     void ShowOpenGLWindow();
+    void ShowOpenGLWindow(FrameBuffers* sceneBuf);
     void ShowPropertiesWindow();
 
 }
