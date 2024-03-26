@@ -138,14 +138,97 @@ int main(int, char**)
 
     std::cout << "Window size is: " << width << " " << height << std::endl;
  
-    // MyApp::FrameBuffers sceneBuf(300, 300);
+    MyApp::FrameBuffers sceneBuf(width, height);
     
-    // std::cout << "FrameBuffer Builded" << std::endl;
+    std::cout << "FrameBuffer Builded" << std::endl;
+
+    
+    const char *vertexShaderSource = "#version 460 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "void main()\n"
+    "{\n"
+    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "}\0";
+
+    const char *fragmentShaderSource = "#version 460 core\n"
+    "out vec4 FragColor;\n"
+    "void main()\n"
+    "{\n"
+    "FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "}\n";
+
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        0.0f,  0.5f, 0.0f
+    };
+
+    unsigned int VBO;
+    glGenBuffers(1, &VBO);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    
+
+    // Shader setup
+    unsigned int vertexShader;
+    vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glCompileShader(vertexShader);
+
+    int  success;
+    char infoLog[512];
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    
+    if(!success)
+    {
+        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+
+    unsigned int fragmentShader;
+    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
+
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if(!success)
+    {
+        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+    
+    unsigned int shaderProgram;
+    shaderProgram = glCreateProgram();
+    
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if(!success) {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+        std::cout << "ERROR::PROGRAM::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+
+    // Program compiled, so no longer needed
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+    
+
+    // Data Interpretation for OpenGL
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    
+    unsigned int VAO;
+    glGenVertexArrays(1, &VAO);
+    
+    std::cout << "Shader things compiled" << std::endl;
 
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
-        // sceneBuf.Bind();
         // Poll and handle events (inputs, window resize, etc.)
         // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
         // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
@@ -162,12 +245,26 @@ int main(int, char**)
         // Attach viewport window, properties
         MyApp::ShowDockWindow(); 
         
-        // MyApp::ShowOpenGLWindow(&sceneBuf);
-        MyApp::ShowOpenGLWindow();
+        MyApp::ShowOpenGLWindow(&sceneBuf);
+        // MyApp::ShowOpenGLWindow();
         MyApp::ShowPropertiesWindow();
 
         // Rendering
         ImGui::Render();
+
+
+        sceneBuf.Bind();
+        {
+            // Now I draw in the framebuffer
+            glUseProgram(shaderProgram);
+            glBindVertexArray(VAO);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+            glBindVertexArray(0);
+            glUseProgram(0);
+            
+        }
+        sceneBuf.Unbind();
+
         int display_w, display_h;
         glfwGetFramebufferSize(window, &display_w, &display_h);
         glViewport(0, 0, display_w, display_h);
@@ -187,7 +284,6 @@ int main(int, char**)
         }
         
         glfwSwapBuffers(window);
-        // sceneBuf.Unbind();
     }
 
     // Cleanup

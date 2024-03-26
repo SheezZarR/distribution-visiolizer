@@ -152,14 +152,11 @@ namespace MyApp {
         
         ImGui::Begin("Opengl");
         { 
-            ImGui::Text("Hi ImGui!");
+            const float width = ImGui::GetContentRegionAvail().x;
+            const float height = ImGui::GetContentRegionAvail().y;
 
-            ImGui::BeginChild("Viewport");
-            // const float width = ImGui::GetContentRegionAvail().x;
-            // const float height = ImGui::GetContentRegionAvail().y;
-
-            // *m_width = width;
-            // *m_height = height;
+            sceneBuf->RescaleFrameBuffer(width, height);
+            // glViewport(0,0, width, height);
 
             ImGui::Image(
                 (ImTextureID)sceneBuf->getFrameTexture(),
@@ -168,7 +165,6 @@ namespace MyApp {
                 ImVec2(1, 0)
             );
 
-            ImGui::EndChild();
         }
         ImGui::End();
     }

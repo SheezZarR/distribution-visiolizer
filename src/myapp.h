@@ -13,9 +13,9 @@ namespace MyApp {
             void Unbind() const;
         
         private:
-            unsigned int fbo = 0;
-            unsigned int texture = 0;
-            unsigned int rbo = 0;
+            GLuint fbo = 0;
+            GLuint texture = 0;
+            GLuint rbo = 0;
 
     };
 
