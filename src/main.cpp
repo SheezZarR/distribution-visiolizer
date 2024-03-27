@@ -131,19 +131,8 @@ int main(int, char**)
     
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-    int width = 0;
-    int height = 0;
 
-    glfwGetWindowSize(window, &width, &height);
-
-    std::cout << "Window size is: " << width << " " << height << std::endl;
- 
-    MyApp::FrameBuffers sceneBuf(width, height);
-    
-    std::cout << "FrameBuffer Builded" << std::endl;
-
-    
-    const char *vertexShaderSource = "#version 460 core\n"
+     const char *vertexShaderSource = "#version 460 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "void main()\n"
     "{\n"
@@ -165,12 +154,9 @@ int main(int, char**)
 
     unsigned int VBO;
     glGenBuffers(1, &VBO);
-    
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
-
     // Shader setup
     unsigned int vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -209,7 +195,7 @@ int main(int, char**)
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if(!success) {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cout << "ERROR::PROGRAM::COMPILATION_FAILED\n" << infoLog << std::endl;
+        std::cout << "ERROR::SHADER_PROGRAM::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
 
     // Program compiled, so no longer needed
@@ -223,8 +209,23 @@ int main(int, char**)
     
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
     
     std::cout << "Shader things compiled" << std::endl;
+
+
+    int width = 0;
+    int height = 0;
+
+    glfwGetWindowSize(window, &width, &height);
+
+    std::cout << "Window size is: " << width << " " << height << std::endl;
+
+    MyApp::FrameBuffers sceneBuf(width, height);
+    
+    std::cout << "FrameBuffer Builded" << std::endl;
 
     // Main loop
     while (!glfwWindowShouldClose(window))

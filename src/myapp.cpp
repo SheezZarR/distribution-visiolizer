@@ -156,7 +156,7 @@ namespace MyApp {
             const float height = ImGui::GetContentRegionAvail().y;
 
             sceneBuf->RescaleFrameBuffer(width, height);
-            // glViewport(0,0, width, height);
+            glViewport(0,0, width, height);
 
             ImGui::Image(
                 (ImTextureID)sceneBuf->getFrameTexture(),
